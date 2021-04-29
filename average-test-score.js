@@ -19,39 +19,60 @@ T = ["test1a", "test2", "test1b", "test1c", "test3"];
 R = ["Wrong Answer", "OK", "Runtime error", "OK", "Time limit exceeded"];
 
 function solution(T, R) {
-  const map = {}, storage = []
-  let score = 0, groups = {}
+  const map = {}
+  let score = 0,
+    groups = {};
 
   for (let i = 0; i < T.length; i++) {
-      let testName = T[i]
+    let testName = T[i];
 
-      if (!map[testName]) {
-          map[testName] = R[i]
-      }
-      setGroups(testName, groups)
+    if (!map[testName]) {
+      map[testName] = R[i];
+    }
+    setGroups(testName, groups);
   }
 
-  console.log('Groups -->', groups)
+  for (const key in groups) {
+    groups[key].names.forEach((test) => {
+      if (map[test] === "OK") {
+        groups[key].total++;
+      }
+    });
+    if (groups[key].total !== groups[key].names.length) {
+      groups[key].total = 0;
+    }
+    score += groups[key].total;
+  }
 
+  console.log("Score -->", score);
+  console.log('Groups w Score -->', groups)
 
+  score = (score / Object.keys(groups).length) * 100
+  return Math.floor(score)
 }
+
+
+
+
+
 
 const setGroups = (name, table) => {
-    for (let i = 0; i < name.length; i++) {
-        const elem = name[i]
+  for (let i = 0; i < name.length; i++) {
+    const elem = name[i];
 
-        if (Number(elem)) {
-            const groupKey = name.slice(0, name.indexOf(elem) + 1)
-            if (!table[groupKey]) {
-                table[groupKey] = {
-                    names: [name],
-                    total: null
-                }
-            } else {
-                table[groupKey].names.push(name)
-            }
-        }
+    if (Number(elem)) {
+      const groupKey = name.slice(0, name.indexOf(elem) + 1);
+      if (!table[groupKey]) {
+        table[groupKey] = {
+          names: [name],
+          total: null,
+        };
+      } else {
+        table[groupKey].names.push(name);
+      }
     }
-  return table
-}
-console.log(solution(T, R))
+  }
+  return table;
+};
+
+console.log(solution(T, R));
